@@ -1,0 +1,30 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: chore-chart-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: PASSWORD
+      MYSQL_DATABASE: chore_chart
+    ports:
+      - "4000:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  web:
+    build: .
+    container_name: chore-chart-web
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=PASSWORD
+      - DB_NAME=chore_chart
+      - PYTHONUNBUFFERED=1
+
+volumes:
+  mysql_data:
